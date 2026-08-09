@@ -1,0 +1,97 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+# Deploys must run one at a time — overlapping runs would race on the release
+# counter and the prune step.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  RELEASES_DIR: /srv/jira-clone-ui/releases
+  CURRENT_LINK: /srv/jira-clone-ui/current
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      # VITE_BUILD_SHA is stamped into index.html's build-sha meta tag (see
+      # index.html) so the post-deploy smoke check can confirm the live site
+      # is actually serving this commit, not stale content.
+      - name: Build
+        run: npm run build
+        env:
+          VITE_BUILD_SHA: ${{ github.sha }}
+
+      - name: Configure SSH access to the droplet
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Ship dist/ to a new timestamped release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          set -euo pipefail
+          RELEASE="$(date -u +%Y%m%d%H%M%S)"
+          echo "RELEASE=$RELEASE" >> "$GITHUB_ENV"
+          RELEASE_DIR="$RELEASES_DIR/$RELEASE"
+          ssh -i ~/.ssh/deploy_key "deploy@$DEPLOY_HOST" "mkdir -p '$RELEASE_DIR'"
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" dist/ "deploy@$DEPLOY_HOST:$RELEASE_DIR/"
+
+      # Atomic: the symlink swap is a single syscall on the droplet, so nginx
+      # (which resolves 'current' per-request, not once at startup) never
+      # serves a half-updated release. Nginx's own config file isn't touched
+      # by this workflow, so it never needs a reload here — only a change to
+      # the server block itself (out of scope for this ticket) would require
+      # one.
+      - name: Flip current symlink atomically
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key "deploy@$DEPLOY_HOST" \
+            "ln -sfn '$RELEASES_DIR/$RELEASE' '$CURRENT_LINK'"
+
+      - name: Prune old releases, keep the last 5
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key "deploy@$DEPLOY_HOST" \
+            "cd '$RELEASES_DIR' && ls -1t | tail -n +6 | xargs -r rm -rf"
+
+      - name: Post-deploy smoke check
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          set -euo pipefail
+          URL="http://$DEPLOY_HOST:$DEPLOY_PORT/"
+          for attempt in 1 2 3 4 5; do
+            if BODY="$(curl -fsS --max-time 10 "$URL")" && grep -q "${{ github.sha }}" <<<"$BODY"; then
+              echo "smoke check passed: $URL is serving commit ${{ github.sha }}"
+              exit 0
+            fi
+            echo "attempt $attempt: site not showing commit ${{ github.sha }} yet, retrying..."
+            sleep 3
+          done
+          echo "::error::Smoke check failed — $URL did not return commit ${{ github.sha }} after deploy"
+          exit 1
