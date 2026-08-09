@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import { BoardPage } from "./pages/BoardPage";
 import { BacklogPage } from "./pages/BacklogPage";
+import { TimelinePage } from "./pages/TimelinePage";
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
         <Route path="/board/:issueKey" element={<BoardPage />} />
         <Route path="/backlog" element={<BacklogPage />} />
         <Route path="/backlog/:issueKey" element={<BacklogPage />} />
+        <Route path="/timeline" element={<TimelinePage />} />
+        <Route path="/timeline/:issueKey" element={<TimelinePage />} />
         <Route path="*" element={<Navigate to="/board" replace />} />
       </Route>
     </Routes>
