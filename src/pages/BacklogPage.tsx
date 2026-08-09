@@ -26,7 +26,7 @@ export function BacklogPage() {
       </Breadcrumbs>
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="h5" fontWeight={700}>
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Backlog
         </Typography>
         <Box

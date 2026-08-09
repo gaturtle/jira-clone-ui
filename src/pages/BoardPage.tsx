@@ -51,7 +51,7 @@ export function BoardPage() {
         </Typography>
       </Breadcrumbs>
 
-      <Typography variant="h5" fontWeight={700} sx={{ mb: 2 }}>
+      <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
         {activeSprint?.name ?? "Board"}
       </Typography>
 

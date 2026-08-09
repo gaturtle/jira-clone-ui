@@ -31,7 +31,7 @@ export function TopBar() {
         <IconButton size="small">
           <AppsOutlinedIcon fontSize="small" />
         </IconButton>
-        <Typography variant="subtitle2" fontWeight={700} sx={{ mr: 2 }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 700, mr: 2 }}>
           Jira-ish
         </Typography>
 

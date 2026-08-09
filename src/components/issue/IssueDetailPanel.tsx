@@ -49,9 +49,9 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
               borderColor: "divider",
             }}
           >
-            <Stack direction="row" alignItems="center" gap={1}>
+            <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
               <IssueTypeIcon type={issue.type} fontSize={18} />
-              <Typography variant="body2" color="text.secondary" fontWeight={600}>
+              <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
                 {issue.key}
               </Typography>
             </Stack>
@@ -63,7 +63,7 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
           <Box sx={{ flex: 1, overflowY: "auto", px: 2.5, py: 2.5 }}>
             <Box sx={{ display: "flex", gap: 3 }}>
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="h6" fontWeight={600} sx={{ mb: 2.5 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2.5 }}>
                   {issue.title}
                 </Typography>
 
@@ -76,7 +76,7 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
                   </Button>
                 </Stack>
 
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
                   Description
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3, lineHeight: 1.6 }}>
@@ -85,7 +85,7 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
 
                 <Divider sx={{ mb: 2 }} />
 
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1.5 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5 }}>
                   Activity
                 </Typography>
                 <TextField
@@ -106,7 +106,7 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
                       <Box key={comment.id} sx={{ display: "flex", gap: 1.25 }}>
                         <UserAvatar user={comment.author} size={28} />
                         <Box>
-                          <Typography variant="caption" fontWeight={700}>
+                          <Typography variant="caption" sx={{ fontWeight: 700 }}>
                             {comment.author.name}
                           </Typography>
                           <Typography variant="body2" color="text.secondary">
@@ -126,7 +126,7 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
 
                 <Stack spacing={2}>
                   <DetailField label="Assignee">
-                    <Stack direction="row" alignItems="center" gap={1}>
+                    <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
                       <UserAvatar user={issue.assignee} size={24} />
                       <Typography variant="body2">
                         {issue.assignee ? issue.assignee.name : "Unassigned"}
@@ -135,21 +135,21 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
                   </DetailField>
 
                   <DetailField label="Reporter">
-                    <Stack direction="row" alignItems="center" gap={1}>
+                    <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
                       <UserAvatar user={issue.reporter} size={24} />
                       <Typography variant="body2">{issue.reporter.name}</Typography>
                     </Stack>
                   </DetailField>
 
                   <DetailField label="Priority">
-                    <Stack direction="row" alignItems="center" gap={1}>
+                    <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
                       <PriorityIcon priority={issue.priority} />
                       <Typography variant="body2">{priorityMeta[issue.priority].label}</Typography>
                     </Stack>
                   </DetailField>
 
                   <DetailField label="Type">
-                    <Stack direction="row" alignItems="center" gap={1}>
+                    <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
                       <IssueTypeIcon type={issue.type} />
                       <Typography variant="body2">{issueTypeMeta[issue.type].label}</Typography>
                     </Stack>
@@ -161,7 +161,7 @@ export function IssueDetailPanel({ issue, basePath }: IssueDetailPanelProps) {
 
                   <DetailField label="Labels">
                     {issue.labels.length > 0 ? (
-                      <Stack direction="row" flexWrap="wrap" gap={0.5}>
+                      <Stack direction="row" sx={{ flexWrap: "wrap", gap: 0.5 }}>
                         {issue.labels.map((label) => (
                           <Chip key={label} label={label} size="small" sx={{ bgcolor: "#F1F2F4" }} />
                         ))}

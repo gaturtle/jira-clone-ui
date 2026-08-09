@@ -47,7 +47,7 @@ export function BacklogSection({
         <IconButton size="small" sx={{ p: 0.25 }}>
           {open ? <ExpandMoreIcon fontSize="small" /> : <ChevronRightIcon fontSize="small" />}
         </IconButton>
-        <Typography variant="body2" fontWeight={700}>
+        <Typography variant="body2" sx={{ fontWeight: 700 }}>
           {title}
         </Typography>
         {subtitle && (
