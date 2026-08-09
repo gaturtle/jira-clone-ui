@@ -56,7 +56,35 @@ function makeIssue(partial: Omit<Issue, "id" | "key" | "comments" | "createdAt" 
   };
 }
 
+const boardExperienceEpic = makeIssue({
+  title: "Board & issue experience",
+  description: "End-to-end kanban board and issue detail experience: columns, cards, filters, and the slide-over detail panel.",
+  type: "epic",
+  priority: "high",
+  status: "in_progress",
+  assignee: marcus,
+  storyPoints: null,
+  labels: ["frontend"],
+  sprintId: "sprint-1",
+  epicId: null,
+});
+
+const planningToolsEpic = makeIssue({
+  title: "Sprint planning & backlog tooling",
+  description: "Backlog grooming, sprint grouping, and performance groundwork for large backlogs.",
+  type: "epic",
+  priority: "medium",
+  status: "todo",
+  assignee: priya,
+  storyPoints: null,
+  labels: ["frontend"],
+  sprintId: "sprint-2",
+  epicId: null,
+});
+
 export const issues: Issue[] = [
+  boardExperienceEpic,
+  planningToolsEpic,
   makeIssue({
     title: "Design kanban board column layout",
     description:
@@ -68,7 +96,7 @@ export const issues: Issue[] = [
     storyPoints: 5,
     labels: ["design"],
     sprintId: "sprint-1",
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Implement issue card component",
@@ -80,7 +108,7 @@ export const issues: Issue[] = [
     storyPoints: 3,
     labels: ["frontend"],
     sprintId: "sprint-1",
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Fix avatar overflow on narrow board columns",
@@ -92,7 +120,7 @@ export const issues: Issue[] = [
     storyPoints: 2,
     labels: ["frontend", "bug"],
     sprintId: "sprint-1",
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Board: filter bar with assignee avatars",
@@ -104,7 +132,7 @@ export const issues: Issue[] = [
     storyPoints: 5,
     labels: ["frontend"],
     sprintId: "sprint-1",
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Set up sidebar navigation shell",
@@ -116,7 +144,7 @@ export const issues: Issue[] = [
     storyPoints: 3,
     labels: ["frontend"],
     sprintId: "sprint-1",
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Issue detail panel: description and activity tabs",
@@ -128,7 +156,7 @@ export const issues: Issue[] = [
     storyPoints: 8,
     labels: ["frontend"],
     sprintId: "sprint-1",
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Backlog: group issues by sprint with collapsible sections",
@@ -140,7 +168,7 @@ export const issues: Issue[] = [
     storyPoints: 5,
     labels: ["frontend"],
     sprintId: "sprint-1",
-    epicId: null,
+    epicId: planningToolsEpic.id,
   }),
   makeIssue({
     title: "Investigate performance of long backlog lists",
@@ -152,7 +180,7 @@ export const issues: Issue[] = [
     storyPoints: null,
     labels: ["spike"],
     sprintId: null,
-    epicId: null,
+    epicId: planningToolsEpic.id,
   }),
   makeIssue({
     title: "Reporting dashboards",
@@ -176,7 +204,7 @@ export const issues: Issue[] = [
     storyPoints: 1,
     labels: ["frontend"],
     sprintId: null,
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Polish issue type and priority iconography",
@@ -188,7 +216,7 @@ export const issues: Issue[] = [
     storyPoints: 2,
     labels: ["design"],
     sprintId: null,
-    epicId: null,
+    epicId: boardExperienceEpic.id,
   }),
   makeIssue({
     title: "Keyboard shortcut cheatsheet modal",
@@ -200,7 +228,7 @@ export const issues: Issue[] = [
     storyPoints: 3,
     labels: ["frontend"],
     sprintId: null,
-    epicId: null,
+    epicId: planningToolsEpic.id,
   }),
 ];
 

@@ -18,7 +18,7 @@ export const SIDEBAR_WIDTH = 240;
 const navItems = [
   { label: "Board", to: "/board", icon: ViewKanbanOutlinedIcon, disabled: false },
   { label: "Backlog", to: "/backlog", icon: FormatListBulletedOutlinedIcon, disabled: false },
-  { label: "Timeline", to: "/timeline", icon: TimelineOutlinedIcon, disabled: true },
+  { label: "Timeline", to: "/timeline", icon: TimelineOutlinedIcon, disabled: false },
   { label: "Reports", to: "/reports", icon: SummarizeOutlinedIcon, disabled: true },
   { label: "Project settings", to: "/settings", icon: SettingsOutlinedIcon, disabled: true },
 ];
