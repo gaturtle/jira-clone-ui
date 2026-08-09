@@ -357,15 +357,15 @@ else
   warn "left root login enabled — re-run this wizard later to lock it down"
 fi
 
-# ── Stage 9: GitHub Actions secrets ─────────────────────────────────────────
-stage "Store GitHub Actions secrets"
-say "This writes DEPLOY_HOST, DEPLOY_SSH_KEY, and DEPLOY_PORT as secrets on the current repo, for the deploy workflow (issue #4) to use."
-if confirm "Write these 3 secrets to this repo's GitHub Actions now?"; then
-  set_secret DEPLOY_HOST "$DROPLET_IP"
+# ── Stage 9: GitHub Actions secrets & variables ─────────────────────────────
+stage "Store GitHub Actions secrets and variables"
+say "DEPLOY_SSH_KEY is genuinely sensitive, so it's stored as a secret. DEPLOY_HOST and DEPLOY_PORT aren't secret (an IP and a port number) — they're stored as variables instead, so you can see their values in the GitHub UI without guessing whether they're right."
+if confirm "Write DEPLOY_SSH_KEY (secret) and DEPLOY_HOST/DEPLOY_PORT (variables) to this repo's GitHub Actions now?"; then
   set_secret DEPLOY_SSH_KEY "$(cat "$DEPLOY_KEY_PATH")"
-  set_secret DEPLOY_PORT "$APP_PORT"
+  set_var DEPLOY_HOST "$DROPLET_IP"
+  set_var DEPLOY_PORT "$APP_PORT"
 else
-  SKIPPED+=("GitHub secrets DEPLOY_HOST, DEPLOY_SSH_KEY, DEPLOY_PORT — set by hand with 'gh secret set' when ready")
+  SKIPPED+=("GitHub secret DEPLOY_SSH_KEY and variables DEPLOY_HOST/DEPLOY_PORT — set by hand with 'gh secret set' / 'gh variable set' when ready")
 fi
 
 finish
@@ -374,6 +374,6 @@ note "Acceptance checklist (issue #2):"
 note "  [ ] http://${DROPLET_IP}:${APP_PORT}/ returns the placeholder page — checked in Stage 8"
 note "  [ ] deploy@${DROPLET_IP} works via key; root login + password auth rejected — checked in Stage 8"
 note "  [ ] 'ufw status' shows default-deny + allows for 22 and ${APP_PORT}; fail2ban is running — printed live in Stage 4/5 output above"
-note "  [ ] DEPLOY_HOST, DEPLOY_SSH_KEY, DEPLOY_PORT are set as GitHub Actions secrets"
+note "  [ ] DEPLOY_SSH_KEY is set as a GitHub Actions secret; DEPLOY_HOST and DEPLOY_PORT are set as variables"
 note "(root SSH access is now locked down and 'deploy' has no sudo rights, so ufw/fail2ban can't be re-queried remotely from here — use your provider's web console if you ever need to recheck them)"
 warn "Keep ./deploy_key and ./deploy_key.pub — they're gitignored, but back the private key up somewhere safe (it's the only copy)."
