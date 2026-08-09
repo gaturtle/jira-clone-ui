@@ -62,16 +62,12 @@ step() { printf '  %s•%s %s\n' "$BLUE" "$RESET" "$1"; }
 note() { printf '  %s%s%s\n' "$DIM" "$1" "$RESET"; }
 warn() { printf '  %s⚠ %s%s\n' "$YELLOW" "$1" "$RESET"; }
 
-# open_url URL — open in the human's browser, cross-platform incl. WSL.
+# open_url URL — open in the human's default Windows browser.
 open_url() {
   local url="$1"
   printf '  %s↗ opening%s %s\n' "$GREEN" "$RESET" "$url"
-  { if   command -v wslview     >/dev/null 2>&1; then wslview "$url"
-    elif command -v explorer.exe >/dev/null 2>&1; then explorer.exe "$url"
-    elif command -v xdg-open    >/dev/null 2>&1; then xdg-open "$url"
-    elif command -v open        >/dev/null 2>&1; then open "$url"
-    else warn "couldn't open a browser — visit it manually: $url"; fi
-  } >/dev/null 2>&1 || warn "couldn't open a browser — visit it manually: $url"
+  { command -v explorer.exe >/dev/null 2>&1 && explorer.exe "$url"; } >/dev/null 2>&1 \
+    || warn "couldn't open a browser — visit it manually: $url"
 }
 
 # pause "msg" — wait for the human to confirm they've done the manual part.
@@ -337,7 +333,11 @@ if confirm "Deploy user confirmed working and placeholder verified — lock down
 set -e
 sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
-systemctl restart sshd
+if systemctl list-unit-files ssh.service >/dev/null 2>&1; then
+  systemctl restart ssh
+else
+  systemctl restart sshd
+fi
 echo "root login and password auth disabled"
 SCRIPT
   note "confirming root login is now actually rejected..."
