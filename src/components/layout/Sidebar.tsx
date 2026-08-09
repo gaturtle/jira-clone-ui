@@ -48,7 +48,7 @@ export function Sidebar() {
           {currentProject.key.slice(0, 2)}
         </Avatar>
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant="body2" fontWeight={700} noWrap>
+          <Typography variant="body2" sx={{ fontWeight: 700 }} noWrap>
             {currentProject.name}
           </Typography>
           <Typography variant="caption" color="text.secondary">
@@ -80,7 +80,7 @@ export function Sidebar() {
             </ListItemIcon>
             <ListItemText
               primary={item.label}
-              primaryTypographyProps={{ fontSize: 13.5, fontWeight: 500 }}
+              slotProps={{ primary: { sx: { fontSize: 13.5, fontWeight: 500 } } }}
             />
           </ListItemButton>
         ))}
